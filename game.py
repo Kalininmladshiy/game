@@ -8,7 +8,7 @@ from utils.curses_tools import draw_frame, get_frame_size, read_controls
 from itertools import cycle
 
 
-def draw(canvas, shorts):
+def draw(canvas, frames):
 
     window = curses.initscr()
     height, width = window.getmaxyx()
@@ -17,27 +17,27 @@ def draw(canvas, shorts):
     curses.curs_set(False)
     canvas.border()
 
-    coroutines_blinker = [blink(
+    blinker_coroutines = [blink(
         canvas,
         random.randrange(1, height - 1),
         random.randrange(1, width - 1),
         random.choice(simbols),
     ) for _ in range(70)]
 
-    coroutine_fire = fire(canvas, 10, 40)
+    fire_coroutine = fire(canvas, 10, 40)
 
-    coroutine_animate_spaceship = animate_spaceship(canvas, 11, 38, shorts)
+    animate_spaceship_coroutine = animate_spaceship(canvas, 11, 38, frames)
 
     while True:
-        for coroutine_blinker in coroutines_blinker:
-            coroutine_blinker.send(None)
+        for blinker_coroutine in blinker_coroutines:
+            blinker_coroutine.send(None)
         try:
-            coroutine_fire.send(None)
+            fire_coroutine.send(None)
         except StopIteration:
             pass
         except RuntimeError:
             pass
-        coroutine_animate_spaceship.send(None)
+        animate_spaceship_coroutine.send(None)
         canvas.refresh()
         time.sleep(0.1)
 
@@ -94,17 +94,17 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def animate_spaceship(canvas, start_row, start_column, shorts):
+async def animate_spaceship(canvas, start_row, start_column, frames):
 
     window = curses.initscr()
     h_max, w_max = window.getmaxyx()
 
-    spaceships_h, spaceships_w = get_frame_size(shorts[0])
+    spaceships_h, spaceships_w = get_frame_size(frames[0])
 
-    for short in cycle(shorts):
-        draw_frame(canvas, start_row, start_column, short)
+    for frame in cycle(frames):
+        draw_frame(canvas, start_row, start_column, frame)
         await asyncio.sleep(0)
-        draw_frame(canvas, start_row, start_column, short, negative=True)
+        draw_frame(canvas, start_row, start_column, frame, negative=True)
         rows_direction, columns_direction, space = read_controls(canvas)
         if rows_direction == -1 and start_row != 0:
             start_row += rows_direction
@@ -126,11 +126,11 @@ async def animate_spaceship(canvas, start_row, start_column, shorts):
 
 if __name__ == '__main__':
 
-    shorts = []
+    frames = []
     for root, dirs, files in os.walk(Path.cwd() / 'shots'):
         for filename in files:
             with open(Path.cwd() / 'shots' / filename, 'r') as my_file:
-                shorts.append(my_file.read())
+                frames.append(my_file.read())
 
     curses.update_lines_cols()
-    curses.wrapper(draw, shorts)
+    curses.wrapper(draw, frames)
