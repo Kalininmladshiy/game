@@ -97,8 +97,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def animate_spaceship(canvas, start_row, start_column, frames):
 
-    window = curses.initscr()
-    h_max, w_max = window.getmaxyx()
+    h_max, w_max = canvas.getmaxyx()
 
     spaceships_h, spaceships_w = get_frame_size(frames[0])
 
@@ -107,22 +106,12 @@ async def animate_spaceship(canvas, start_row, start_column, frames):
         await asyncio.sleep(0)
         draw_frame(canvas, start_row, start_column, frame, negative=True)
         rows_direction, columns_direction, space = read_controls(canvas)
-        if rows_direction == -1 and start_row != 0:
+        if (start_row + rows_direction >= 0 and
+                start_row + rows_direction <= (h_max - spaceships_h)):
             start_row += rows_direction
-        else:
-            pass
-        if rows_direction == 1 and start_row != (h_max - spaceships_h):
-            start_row += rows_direction
-        else:
-            pass
-        if columns_direction == -1 and start_column != 0:
+        if (start_column + columns_direction >= 0 and
+                start_column + columns_direction <= (w_max - spaceships_w)):
             start_column += columns_direction
-        else:
-            pass
-        if columns_direction == 1 and start_column != (w_max - spaceships_w):
-            start_column += columns_direction
-        else:
-            pass
 
 
 if __name__ == '__main__':
