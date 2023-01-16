@@ -129,8 +129,8 @@ if __name__ == '__main__':
     frames = []
     for root, dirs, files in os.walk(Path.cwd() / 'shots'):
         for filename in files:
-            with open(Path.cwd() / 'shots' / filename, 'r') as my_file:
-                frames.append(my_file.read())
+            with open(Path.cwd() / 'shots' / filename, 'r') as file:
+                frames.append(file.read())
 
     curses.update_lines_cols()
     curses.wrapper(draw, frames)
