@@ -105,6 +105,7 @@ async def animate_spaceship(canvas, start_row, start_column, frames):
         draw_frame(canvas, start_row, start_column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, start_row, start_column, frame, negative=True)
+
         rows_direction, columns_direction, space = read_controls(canvas)
         if (start_row + rows_direction >= 0 and
                 start_row + rows_direction <= (h_max - spaceships_h)):
@@ -117,10 +118,14 @@ async def animate_spaceship(canvas, start_row, start_column, frames):
 if __name__ == '__main__':
 
     frames = []
+    spaceship_animate_tics = 2
+
     for root, dirs, files in os.walk(Path.cwd() / 'shots'):
         for filename in files:
             with open(Path.cwd() / 'shots' / filename, 'r') as file:
-                frames.append(file.read())
+                frame = file.read()
+                for _ in range(spaceship_animate_tics):
+                    frames.append(frame)
 
     curses.update_lines_cols()
     curses.wrapper(draw, frames)
