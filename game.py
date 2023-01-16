@@ -21,6 +21,7 @@ def draw(canvas, frames):
         canvas,
         random.randrange(1, height - 1),
         random.randrange(1, width - 1),
+        20,
         random.choice(simbols),
     ) for _ in range(70)]
 
@@ -42,10 +43,10 @@ def draw(canvas, frames):
         time.sleep(0.1)
 
 
-async def blink(canvas, row, column, symbol='*'):
+async def blink(canvas, row, column, offset_tics, symbol='*'):
 
     while True:
-        for _ in range(random.randrange(1, 20)):
+        for _ in range(random.randrange(1, offset_tics)):
             await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
