@@ -17,7 +17,7 @@ def draw(canvas, frames):
     curses.curs_set(False)
     canvas.border()
 
-    blinker_coroutines = [blink(
+    coroutines = [blink(
         canvas,
         random.randrange(1, height - 1),
         random.randrange(1, width - 1),
@@ -25,20 +25,17 @@ def draw(canvas, frames):
         random.choice(simbols),
     ) for _ in range(70)]
 
-    fire_coroutine = fire(canvas, 10, 40)
+    coroutines.append(fire(canvas, 10, 40))
+    
 
-    animate_spaceship_coroutine = animate_spaceship(canvas, 11, 38, frames)
+    coroutines.append(animate_spaceship(canvas, 11, 38, frames))
 
     while True:
-        for blinker_coroutine in blinker_coroutines:
-            blinker_coroutine.send(None)
-        try:
-            fire_coroutine.send(None)
-        except StopIteration:
-            pass
-        except RuntimeError:
-            pass
-        animate_spaceship_coroutine.send(None)
+        for coroutine in coroutines.copy():
+            try:
+                coroutine.send(None)
+            except StopIteration:
+                coroutines.remove(coroutine)        
         canvas.refresh()
         time.sleep(0.1)
 
