@@ -16,14 +16,13 @@ def draw(canvas, frames):
     curses.curs_set(False)
     canvas.border()
 
-    offset_tics = 20
     stars_number = 70
     coroutines = [blink(
         canvas,
-        random.randrange(height),
-        random.randrange(width),
-        offset_tics,
-        random.choice(simbols),
+        row=random.randrange(height),
+        column=random.randrange(width),
+        offset_tics=random.randrange(1, 20),
+        symbol=random.choice(simbols),
     ) for _ in range(stars_number)]
 
     start_row_fire = 10
@@ -53,7 +52,7 @@ def draw(canvas, frames):
 async def blink(canvas, row, column, offset_tics, symbol='*'):
 
     while True:
-        for _ in range(random.randrange(1, offset_tics)):
+        for _ in range(offset_tics):
             await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol, curses.A_DIM)
