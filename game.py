@@ -10,9 +10,8 @@ from itertools import cycle
 
 def draw(canvas, frames):
 
-    window = curses.initscr()
-    height, width = window.getmaxyx()
-    window.nodelay(True)
+    height, width = canvas.getmaxyx()
+    canvas.nodelay(True)
     simbols = '+*.:'
     curses.curs_set(False)
     canvas.border()
