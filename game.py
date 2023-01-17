@@ -113,12 +113,14 @@ async def animate_spaceship(canvas, start_row, start_column, frames):
         draw_frame(canvas, start_row, start_column, frame, negative=True)
 
         rows_direction, columns_direction, space = read_controls(canvas)
-        if (start_row + rows_direction >= 0 and
-                start_row + rows_direction <= (h_max - spaceships_h)):
-            start_row += rows_direction
-        if (start_column + columns_direction >= 0 and
-                start_column + columns_direction <= (w_max - spaceships_w)):
-            start_column += columns_direction
+        new_row = start_row + rows_direction
+        new_column = start_column + columns_direction
+        if rows_direction == -1 or columns_direction == -1:
+            start_row = max(new_row, 0)
+            start_column = max(new_column, 0)
+        if rows_direction == 1 or columns_direction == 1:
+            start_row = min(new_row, h_max - spaceships_h)
+            start_column = min(new_column, w_max - spaceships_w)
 
 
 if __name__ == '__main__':
