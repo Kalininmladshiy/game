@@ -16,25 +16,36 @@ def draw(canvas, frames):
     curses.curs_set(False)
     canvas.border()
 
+    offset_tics = 20
+    stars_number = 70
     coroutines = [blink(
         canvas,
-        random.randrange(1, height - 1),
-        random.randrange(1, width - 1),
-        20,
+        random.randrange(height),
+        random.randrange(width),
+        offset_tics,
         random.choice(simbols),
-    ) for _ in range(70)]
+    ) for _ in range(stars_number)]
 
-    coroutines.append(fire(canvas, 10, 40))
-    
+    start_row_fire = 10
+    start_column_fire = 40
+    coroutines.append(fire(canvas, start_row_fire, start_column_fire))
 
-    coroutines.append(animate_spaceship(canvas, 11, 38, frames))
+    start_row_spaceship = 11
+    start_column_spaceship = 38
+    coroutines.append(animate_spaceship(
+        canvas,
+        start_row_spaceship,
+        start_column_spaceship,
+        frames,
+    )
+                      )
 
     while True:
         for coroutine in coroutines.copy():
             try:
                 coroutine.send(None)
             except StopIteration:
-                coroutines.remove(coroutine)        
+                coroutines.remove(coroutine)
         canvas.refresh()
         time.sleep(0.1)
 
